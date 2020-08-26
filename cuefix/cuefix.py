@@ -71,20 +71,44 @@ class CueFix:
     def __init__(self, cue):
         self.cue = cue
 
-    def fix(self, encoding='utf-8-sig', newline='unix', verbose=False):
+    def fix(self, encoding='utf-8-sig', newline='unix', dryrun=False, verbose=False):
         enc = clean_codec_name(encoding)
+
         cue_byte_str = self.cue.byte_str
-        cue_byte_str = self.convert_encoding(cue_byte_str, enc, verbose)
-        cue_byte_str = self.convert_newline(cue_byte_str, newline, verbose)
-        cue_byte_str = self.fix_audio_file(cue_byte_str, enc, verbose)
-        return cue_byte_str
+        cue_byte_str, a = self.convert_encoding(cue_byte_str, enc, verbose)
+        cue_byte_str, b = self.convert_newline(cue_byte_str, newline, verbose)
+        cue_byte_str, c = self.fix_audio_file(cue_byte_str, enc, verbose)
+
+        if dryrun:
+            if verbose:
+                log.info('just a dry-run')
+            print(cue_byte_str.decode(encoding))
+            return
+
+        if a or b or c:
+            cue_filename = self.cue.filename
+            backup_cue_filename = cue_filename + '.backup'
+            dir = self.cue.directory
+            if not os.path.exists(backup_cue_filename):
+                if verbose:
+                    log.info('backup cue file {} to {}'.format(
+                        cue_filename, backup_cue_filename))
+                os.rename(os.path.join(dir, cue_filename),
+                          os.path.join(dir, backup_cue_filename))
+            with open(os.path.join(dir, cue_filename), 'wb') as f:
+                if verbose:
+                    log.info(
+                        'write the fixed cue into file {}'.format(cue_filename))
+                f.write(cue_byte_str)
+        elif verbose:
+            log.info('everything looks good!')
 
     def convert_encoding(self, byte_str, encoding='utf-8-sig', verbose=False):
         if self.cue.encoding == encoding:
             if verbose:
                 log.info(
                     'no need to convert encoding, it is {} already'.format(encoding))
-            return byte_str
+            return byte_str, False
         # print(self.cue.byte_str)
         # s = byte_str.decode(self.cue.encoding)
         # print(s)
@@ -92,21 +116,21 @@ class CueFix:
         # print(t)
         log.info("convert encoding from {} to {}".format(
             self.cue.encoding, encoding))
-        return byte_str.decode(self.cue.encoding).encode(encoding)
+        return byte_str.decode(self.cue.encoding).encode(encoding), True
 
     def convert_newline(self, byte_str, newline='unix', verbose=False):
         if self.cue.newline == newline:
             if verbose:
                 log.info(
                     'no need to convert newline, it is {} format already'.format(newline))
-            return byte_str
+            return byte_str, False
         if verbose:
             log.info('convert newline from {} to {} format'.format(
                 self.cue.newline, newline))
         return byte_str.replace(
             NEWLINE_CHAR[self.cue.newline],
             NEWLINE_CHAR[newline]
-        )
+        ), True
 
     def find_audio_file(self, directory, filename):
         audio_files = []
@@ -140,7 +164,7 @@ class CueFix:
             if verbose:
                 log.info('no need to fix, audio file {} exists in directory {}'.format(
                     audio_file, dir))
-            return byte_str
+            return byte_str, False
 
         if verbose:
             log.info('cannot find audio file {} in directory {}'.format(
@@ -149,7 +173,7 @@ class CueFix:
         if verbose:
             log.info('found audio file {}'.format(new_audio_file))
 
-        return byte_str.decode(encoding).replace(audio_file, new_audio_file).encode(encoding)
+        return byte_str.decode(encoding).replace(audio_file, new_audio_file).encode(encoding), True
 
 
 # cue = CueFile("/home/jian/test.cue")
@@ -162,4 +186,5 @@ class CueFix:
 cue = CueFile("/home/jian/utf8bom.cue")
 print(cue)
 cf = CueFix(cue)
-print(cf.fix(verbose=True))
+# cf.fix(dryrun=True, verbose=True)
+cf.fix(verbose=True)
