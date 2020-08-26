@@ -60,7 +60,7 @@ class CueFile:
 
     def extract_audio_file(self):
         cue_str = self.byte_str.decode(self.encoding)
-        print(cue_str)
+        # print(cue_str)
         result = AUDIO_FILE_RE.search(cue_str)
         if result == None:
             raise Exception('cannot extract audio file name')
@@ -114,8 +114,9 @@ class CueFix:
         # print(s)
         # t = s.encode(encoding)
         # print(t)
-        log.info("convert encoding from {} to {}".format(
-            self.cue.encoding, encoding))
+        if verbose:
+            log.info("convert encoding from {} to {}".format(
+                self.cue.encoding, encoding))
         return byte_str.decode(self.cue.encoding).encode(encoding), True
 
     def convert_newline(self, byte_str, newline='unix', verbose=False):
