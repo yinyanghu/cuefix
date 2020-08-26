@@ -183,8 +183,8 @@ class CueFix:
 
 # print('\n')
 
-cue = CueFile("/home/jian/utf8bom.cue")
-print(cue)
-cf = CueFix(cue)
+# cue = CueFile("/home/jian/utf8bom.cue")
+# print(cue)
+# cf = CueFix(cue)
 # cf.fix(dryrun=True, verbose=True)
-cf.fix(verbose=True)
+# cf.fix(verbose=True)
