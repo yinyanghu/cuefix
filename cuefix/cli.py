@@ -9,6 +9,7 @@ def main():
     parser.add_argument('filepath')
     parser.add_argument('--version', action='version',
                         version='%(prog)s {0}'.format(cuefix.__version__))
+    parser.add_argument('-i', '--info', action='store_true', default=False)
     parser.add_argument('-e', '--encoding', default='utf-8-sig')
     parser.add_argument('-n', '--newline', default='unix')
     parser.add_argument('--dryrun', action='store_true', default=False)
@@ -16,6 +17,10 @@ def main():
 
     args = parser.parse_args()
     print(args)
+    if args.info:
+        print(cuefix.info(args.filepath))
+        return
+
     cuefix.fix(args.filepath, args.encoding,
                args.newline, args.dryrun, args.verbose)
 

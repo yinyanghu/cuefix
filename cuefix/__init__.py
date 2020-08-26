@@ -6,4 +6,8 @@ def fix(filepath, encoding='utf-8-sig', newline='unix', dryrun=False, verbose=Fa
     CueFix(CueFile(filepath)).fix(encoding, newline, dryrun, verbose)
 
 
-__all__ = [fix, '__version__', 'VERSION', CueFile, CueFix, fix]
+def info(filepath):
+    return str(CueFile(filepath))
+
+
+__all__ = [fix, '__version__', 'VERSION', CueFile, CueFix, fix, info]
