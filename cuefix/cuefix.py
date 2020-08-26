@@ -25,8 +25,8 @@ def clean_codec_name(codec):
 
 class CueFile:
     def __init__(self, filepath):
-        self.filepath = filepath
-        self.directory, self.filename = os.path.split(filepath)
+        self.filepath = os.path.abspath(filepath)
+        self.directory, self.filename = os.path.split(self.filepath)
         with open(filepath, 'rb') as f:
             self.byte_str = f.read()
         self.encoding = self.detect_file_encoding()
