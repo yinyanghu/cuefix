@@ -16,7 +16,6 @@ def main():
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
 
     args = parser.parse_args()
-    print(args)
     if args.info:
         print(cuefix.info(args.filepath))
         return
