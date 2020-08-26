@@ -1,6 +1,7 @@
 # CueFix
 
-[![PyPI version](https://img.shields.io/pypi/v/cuefix.svg)](https://pypi.python.org/pypi/cuefix)
+[![Python](https://img.shields.io/pypi/pyversions/cuefix.svg?style=plastic)](https://badge.fury.io/py/cuefix)
+[![PyPI](https://badge.fury.io/py/cuefix.svg)](https://badge.fury.io/py/cuefix)
 
 CueFix is simple command-line tool to fix CUE files which are popular in lossless audio / albums.
 
