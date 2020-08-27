@@ -19,10 +19,6 @@ NEWLINE_CHAR = {
 AUDIO_FILE_RE = re.compile(r'FILE "(.*)" WAVE')
 
 
-def clean_codec_name(codec):
-    return codec.lower()
-
-
 class CueFile:
     def __init__(self, filepath):
         self.filepath = os.path.abspath(filepath)
@@ -49,7 +45,7 @@ class CueFile:
             raise Exception('Cannot detect encoding of file {}: {}'.format(
                 self.filename, encoding))
         # print(encoding)
-        return clean_codec_name(encoding['encoding'])
+        return encoding['encoding']
 
     def detect_newline(self):
         for sys in NEWLINE_CHAR:
@@ -72,12 +68,29 @@ class CueFix:
         self.cue = cue
 
     def fix(self, encoding='utf-8-sig', newline='unix', dryrun=False, verbose=False):
-        enc = clean_codec_name(encoding)
+        current_encoding = self.cue.encoding
 
         cue_byte_str = self.cue.byte_str
-        cue_byte_str, a = self.convert_encoding(cue_byte_str, enc, verbose)
-        cue_byte_str, b = self.convert_newline(cue_byte_str, newline, verbose)
-        cue_byte_str, c = self.fix_audio_file(cue_byte_str, enc, verbose)
+        file_changed = False
+
+        if encoding is not None:
+            cue_byte_str, c = self.convert_encoding(
+                cue_byte_str, encoding, verbose)
+            current_encoding = encoding
+            file_changed = file_changed or c
+        elif verbose:
+            log.info('converting encoding is skipped')
+
+        if newline is not None:
+            cue_byte_str, c = self.convert_newline(
+                cue_byte_str, newline, verbose)
+            file_changed = file_changed or c
+        elif verbose:
+            log.info('converting newline is skipped')
+
+        cue_byte_str, c = self.fix_audio_file(
+            cue_byte_str, current_encoding, verbose)
+        file_changed = file_changed or c
 
         if dryrun:
             if verbose:
@@ -85,7 +98,7 @@ class CueFix:
             print(cue_byte_str.decode(encoding))
             return
 
-        if a or b or c:
+        if file_changed:
             cue_filename = self.cue.filename
             backup_cue_filename = cue_filename + '.backup'
             dir = self.cue.directory

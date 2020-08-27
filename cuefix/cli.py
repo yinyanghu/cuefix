@@ -12,6 +12,8 @@ def main():
     parser.add_argument('-i', '--info', action='store_true', default=False)
     parser.add_argument('-e', '--encoding', default='utf-8-sig')
     parser.add_argument('-n', '--newline', default='unix')
+    parser.add_argument('--no-encoding', action='store_true', default=False)
+    parser.add_argument('--no-newline', action='store_true', default=False)
     parser.add_argument('--dryrun', action='store_true', default=False)
     parser.add_argument('-v', '--verbose', action='store_true', default=False)
 
@@ -20,8 +22,10 @@ def main():
         print(cuefix.info(args.filepath))
         return
 
-    cuefix.fix(args.filepath, args.encoding,
-               args.newline, args.dryrun, args.verbose)
+    cuefix.fix(args.filepath,
+               args.encoding if not args.no_encoding else None,
+               args.newline if not args.no_newline else None,
+               args.dryrun, args.verbose)
 
 
 if __name__ == '__main__':
