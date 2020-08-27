@@ -55,21 +55,24 @@ Please use the following encoding name in `cuefix`:
 - UTF-8 BOM: `utf-8-sig`
 - GB 2312: `gb2312`
 
-|                        |    Platform     | UTF-8 |     UTF-8 BOM      |      GB 2312       |
-| :--------------------: | :-------------: | :---: | :----------------: | :----------------: |
-|      Foobar 2000       |     Windows     |  :x:  | :heavy_check_mark: | :heavy_check_mark: |
-|        DEADBEEF        | Linux / Android |       |                    |                    |
-|          VOX           |   macOS / iOS   |       |                    |                    |
-| Synology Audio Station |   NAS / Linux   |       |                    |                    |  |
+|                        |    Platform     |        UTF-8       |     UTF-8 BOM      |      GB 2312       |
+| :--------------------: | :-------------: | :----------------: | :----------------: | :----------------: |
+|      Foobar 2000       |     Windows     |        :x:         | :heavy_check_mark: | :heavy_check_mark: |
+|        DeaDBeeF        | Linux / Android | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|          VOX           |   macOS / iOS   | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+| Synology Audio Station |   NAS / Linux   | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+
+> Note: DeaDBeeF on Linux could support CUE file in encoding GB 2312 by enabling `Chinese CP 936 detection and recording` in the settings.
+> However, DeaDBeeF on macOs still cannot support GB 2312 even if we enable the setting.
 
 ### Newline
 
 |                        |    Platform     |     Unix (LF)      |   Windows (CRLF)   |
 | :--------------------: | :-------------: | :----------------: | :----------------: |
 |      Foobar 2000       |     Windows     | :heavy_check_mark: | :heavy_check_mark: |
-|        DEADBEEF        | Linux / Android |                    |                    |
-|          VOX           |   macOS / iOS   |                    |                    |
-| Synology Audio Station |   NAS / Linux   |                    |                    |
+|        DeaDBeeF        | Linux / Android | :heavy_check_mark: | :heavy_check_mark: |
+|          VOX           |   macOS / iOS   | :heavy_check_mark: | :heavy_check_mark: |
+| Synology Audio Station |   NAS / Linux   | :heavy_check_mark: | :heavy_check_mark: |
 
 ## License
 
