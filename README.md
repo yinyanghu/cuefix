@@ -5,6 +5,12 @@
 
 CueFix is simple command-line tool to fix CUE files which are popular in lossless audio / albums.
 
+CueFix provides the following functionalities:
+
+- convert encoding of CUE file: support GB2312, UTF-8, UTF-8 BOM, etc.
+- convert newline format of CUE file: support Windows CRLF and Unix LF
+- scan the directory and fix not matched audio file in CUE file
+
 Please feel free to fork and contribute to the project if you like.
 
 ## Installation
@@ -43,7 +49,41 @@ $ pip3 install --upgrade cuefix
 
 ## Getting Started
 
-TODO(yinyanghu)
+```
+$ cuefix -h
+usage: cuefix [-h] [--version] [-v] [-i] [--dryrun]
+              [-e {utf-8-sig,utf-8,gb2312}] [-n {unix,windows}]
+              [--no-encoding] [--no-newline] [--no-backup]
+              filepath
+
+Fix a CUE file in a directory: convert encoding, convert newline character,
+fix not matched audio file.
+
+positional arguments:
+  filepath              file path to the input cue file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             print the version of cuefix and exit
+  -v, --verbose         enable verbose output
+
+dry-run options:
+  -i, --info            display metainfo of the input cue file only
+  --dryrun              dry-run and print out fixed cue file
+
+fix options:
+  -e {utf-8-sig,utf-8,gb2312}, --encoding {utf-8-sig,utf-8,gb2312}
+                        encoding which cue file will be converted to, default
+                        is UTF-8 BOM (utf-8-sig)
+  -n {unix,windows}, --newline {unix,windows}
+                        newline format which cue file will be converted to,
+                        default is Unix
+  --no-encoding         converting encoding will be skipped
+  --no-newline          converting newline will be skipped
+
+backup options:
+  --no-backup           no backup for the input cue file, USE WITH CAUTION!
+```
 
 ## CUE Formats Supported by Popular Media Players
 
