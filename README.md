@@ -9,8 +9,6 @@ Please feel free to fork and contribute to the project if you like.
 
 ## Installation
 
----
-
 ### Prerequisites
 
 The following dependencies are necessary:
@@ -45,13 +43,9 @@ $ pip3 install --upgrade cuefix
 
 ## Getting Started
 
----
-
 TODO(yinyanghu)
 
 ## CUE Formats Supported by Popular Media Players
-
----
 
 ### Encoding
 
@@ -65,7 +59,7 @@ Please use the following encoding name in `cuefix`:
 | :--------------------: | :-------------: | :---: | :----------------: | :----------------: |
 |      Foobar 2000       |     Windows     |  :x:  | :heavy_check_mark: | :heavy_check_mark: |
 |        DEADBEEF        | Linux / Android |       |                    |                    |
-|          VOX           |      macOS      |       |                    |                    |
+|          VOX           |   macOS / iOS   |       |                    |                    |
 | Synology Audio Station |   NAS / Linux   |       |                    |                    |  |
 
 ### Newline
@@ -74,5 +68,9 @@ Please use the following encoding name in `cuefix`:
 | :--------------------: | :-------------: | :----------------: | :----------------: |
 |      Foobar 2000       |     Windows     | :heavy_check_mark: | :heavy_check_mark: |
 |        DEADBEEF        | Linux / Android |                    |                    |
-|          VOX           |      macOS      |                    |                    |
+|          VOX           |   macOS / iOS   |                    |                    |
 | Synology Audio Station |   NAS / Linux   |                    |                    |
+
+## License
+
+[GNU General Public License v3.0](https://github.com/yinyanghu/cuefix/blob/master/LICENSE)
