@@ -10,6 +10,7 @@ CueFix provides the following functionalities:
 - convert encoding of CUE file: support GB2312, UTF-8, UTF-8 BOM, etc.
 - convert newline format of CUE file: support Windows CRLF and Unix LF
 - scan the directory and fix not matched audio file in CUE file
+- backup the original CUE file so that users can revert the CUE file back
 
 Please feel free to fork and contribute to the project if you like.
 
