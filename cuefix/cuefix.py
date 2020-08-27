@@ -8,10 +8,6 @@ log = logging.getLogger('cuefix')
 logging.basicConfig(level=os.environ.get('LOGLEVEL', 'INFO'))
 
 
-def scan_folder():
-    pass
-
-
 NEWLINE_CHAR = {
     'windows': b'\r\n',
     # must check windows format before unix format, since '\n' is a substring of '\r\n'
@@ -200,3 +196,11 @@ class CueFix:
             log.info('found audio file {}'.format(new_audio_file))
 
         return byte_str.decode(encoding).replace(audio_file, new_audio_file).encode(encoding), True
+
+
+def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=False, verbose=False):
+    CueFix(CueFile(filepath), backup, dryrun, verbose).fix(encoding, newline)
+
+
+def info(filepath):
+    return str(CueFile(filepath))
