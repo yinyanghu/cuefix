@@ -10,13 +10,14 @@ def validate_args(args):
 def main():
     parser = argparse.ArgumentParser(
         prog='cuefix',
-        description='Clean and fix a CUE file in a directory',
+        description='Fix a CUE file in a directory: convert encoding, convert newline character, fix not matched audio file.',
     )
     parser.add_argument('filepath', help='file path to the input cue file')
     parser.add_argument('--version', action='version',
-                        version='%(prog)s {0}'.format(cuefix.__version__))
+                        version='%(prog)s {0}'.format(cuefix.__version__),
+                        help='print the version of cuefix and exit')
     parser.add_argument('-v', '--verbose', action='store_true', default=False,
-                        help='print version and exit')
+                        help='enable verbose output')
 
     dryrun_group = parser.add_argument_group('dry-run options')
     dryrun_group.add_argument('-i', '--info', action='store_true', default=False,
@@ -27,7 +28,7 @@ def main():
     fix_group = parser.add_argument_group('fix options')
     fix_group.add_argument('-e', '--encoding', default='utf-8-sig',
                            choices=['utf-8-sig', 'utf-8', 'gb2312'],
-                           help='encoding which cue file will be converted to, default is UTF-8 BOM')
+                           help='encoding which cue file will be converted to, default is UTF-8 BOM (utf-8-sig)')
     fix_group.add_argument('-n', '--newline', default='unix',
                            choices=['unix', 'windows'],
                            help='newline format which cue file will be converted to, default is Unix')
