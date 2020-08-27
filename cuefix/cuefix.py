@@ -2,6 +2,7 @@ import chardet
 import logging
 import os
 import re
+import time
 
 log = logging.getLogger('cuefix')
 logging.basicConfig(level=os.environ.get('LOGLEVEL', 'INFO'))
@@ -106,8 +107,13 @@ class CueFix:
                 if verbose:
                     log.info('backup cue file {} to {}'.format(
                         cue_filename, backup_cue_filename))
-                os.rename(os.path.join(dir, cue_filename),
-                          os.path.join(dir, backup_cue_filename))
+            else:
+                if verbose:
+                    log.info('found previous backup cue file')
+                timestamp = str(int(time.time() * 10000))
+                backup_cue_filename = cue_filename + '.' + timestamp + '.backup'
+            os.rename(os.path.join(dir, cue_filename),
+                      os.path.join(dir, backup_cue_filename))
             with open(os.path.join(dir, cue_filename), 'wb') as f:
                 if verbose:
                     log.info(
