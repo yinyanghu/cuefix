@@ -89,17 +89,17 @@ backup options:
 
 ### Media Players
 
-- Foobar 2000
+- [Foobar 2000](https://www.foobar2000.org/)
   - Windows (version 1.5.5)
-- DeaDBeeF
+- [DeaDBeeF](https://deadbeef.sourceforge.io/)
   - Linux (version 1.8.4)
   - Android
   - Windows (unstable, nightly build)
   - macOS (unstable, nightly build)
-- VOX
+- [VOX](https://vox.rocks/)
   - macOS (version 3.3.17)
   - iOS
-- Synology Audio Station
+- [Synology Audio Station](https://www.synology.com/en-ca/dsm/feature/audio_station)
   - Synology DSM (version 6.2.3)
   - Audio Station (version 6.5.5-3374)
 
