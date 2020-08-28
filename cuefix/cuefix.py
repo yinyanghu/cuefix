@@ -200,7 +200,7 @@ class CueFix:
 
 def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=False, verbose=False):
     if verbose:
-        log.info('Start fix CUE file: {}'.format(filepath))
+        log.info('Start fixing CUE file: {}'.format(filepath))
     cue_file = CueFile(filepath)
     if verbose:
         log.info(str(cue_file))
@@ -209,5 +209,5 @@ def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=Fals
 
 def info(filepath, verbose=False):
     if verbose:
-        log.info('Start fix CUE file: {}'.format(filepath))
+        log.info('Start fixing CUE file: {}'.format(filepath))
     return str(CueFile(filepath))
