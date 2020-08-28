@@ -44,13 +44,16 @@ class CueFile:
         if self.verbose:
             log.info('result of automatic detection: {}'.format(encoding))
         try:
-            if encoding['encoding'] is None or encoding['confidence'] < 0.75:
+            c = encoding['encoding']
+            if c is None or encoding['confidence'] < 0.75:
                 raise UnicodeDecodeError(
-                    encoding['encoding'].lower(),
+                    'unknown' if c is None else c.lower(),
                     self.byte_str, 0, len(self.byte_str),
                     'Cannot detect encoding of file {}: {}'.format(self.filename, encoding))
-            c = encoding['encoding'].lower()
+            c = c.lower()
             self.byte_str.decode(encoding=c, errors='strict')
+            if self.verbose:
+                log.info('found exact encoding: {}'.format(c))
             return c
         except UnicodeDecodeError:
             if self.verbose:
@@ -59,6 +62,8 @@ class CueFile:
             for c in SUPPORT_ENCODING:
                 try:
                     self.byte_str.decode(encoding=c, errors='strict')
+                    if self.verbose:
+                        log.info('found exact encoding: {}'.format(c))
                     return c
                 except UnicodeError:
                     if self.verbose:
