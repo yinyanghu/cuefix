@@ -13,11 +13,14 @@ NEWLINE_CHAR = {
     # must check windows format before unix format, since '\n' is a substring of '\r\n'
     'unix': b'\n',
 }
-AUDIO_FILE_RE = re.compile(r'FILE "(.*)" WAVE')
+AUDIO_FILE_REGEX = re.compile(r'FILE "(.*)" WAVE')
+AUDIO_FILE_EXTENSION = ['wav', 'flac', 'ape', 'tta', 'tak']
+SUPPORT_ENCODING = ['gb2312', 'gbk', 'gb18030', 'utf-8', 'utf-8-sig']
 
 
 class CueFile:
-    def __init__(self, filepath):
+    def __init__(self, filepath, verbose=False):
+        self.verbose = verbose
         self.filepath = os.path.abspath(filepath)
         self.directory, self.filename = os.path.split(self.filepath)
         with open(self.filepath, 'rb') as f:
@@ -38,10 +41,32 @@ class CueFile:
 
     def detect_file_encoding(self):
         encoding = chardet.detect(self.byte_str)
-        if encoding['confidence'] < 0.75:
-            raise Exception('Cannot detect encoding of file {}: {}'.format(
-                self.filename, encoding))
-        return encoding['encoding'].lower()
+        if self.verbose:
+            log.info('result of automatic detection: {}'.format(encoding))
+        try:
+            if encoding['encoding'] is None or encoding['confidence'] < 0.75:
+                raise UnicodeDecodeError(
+                    encoding['encoding'].lower(),
+                    self.byte_str, 0, len(self.byte_str),
+                    'Cannot detect encoding of file {}: {}'.format(self.filename, encoding))
+            c = encoding['encoding'].lower()
+            self.byte_str.decode(encoding=c, errors='strict')
+            return c
+        except UnicodeDecodeError:
+            if self.verbose:
+                log.info(
+                    'failed to detect encoding automatically: {}'.format(encoding))
+            for c in SUPPORT_ENCODING:
+                try:
+                    self.byte_str.decode(encoding=c, errors='strict')
+                    return c
+                except UnicodeError:
+                    if self.verbose:
+                        log.info('tried on encoding {} but failed'.format(c))
+        raise UnicodeDecodeError(
+            'unknown',
+            self.byte_str, 0, len(self.byte_str),
+            'cannot use any support encodings to decode the cue file')
 
     def detect_newline(self):
         for sys in NEWLINE_CHAR:
@@ -52,7 +77,7 @@ class CueFile:
 
     def extract_audio_file(self):
         cue_str = self.byte_str.decode(self.encoding)
-        result = AUDIO_FILE_RE.search(cue_str)
+        result = AUDIO_FILE_REGEX.search(cue_str)
         if result == None:
             raise Exception('cannot extract audio file name')
         return result.group(1)
@@ -154,7 +179,7 @@ class CueFix:
     def find_audio_file(self, directory, filename):
         audio_files = []
         for filename in os.listdir(directory):
-            for ext in ['wav', 'flac', 'ape', 'tta']:
+            for ext in AUDIO_FILE_EXTENSION:
                 if filename.endswith(ext):
                     audio_files.append(filename)
 
@@ -201,7 +226,7 @@ class CueFix:
 def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=False, verbose=False):
     if verbose:
         log.info('Start fixing CUE file: {}'.format(filepath))
-    cue_file = CueFile(filepath)
+    cue_file = CueFile(filepath, verbose)
     if verbose:
         log.info(str(cue_file))
     CueFix(cue_file, backup, dryrun, verbose).fix(encoding, newline)
@@ -210,4 +235,4 @@ def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=Fals
 def info(filepath, verbose=False):
     if verbose:
         log.info('Start fixing CUE file: {}'.format(filepath))
-    return str(CueFile(filepath))
+    return str(CueFile(filepath, verbose))
