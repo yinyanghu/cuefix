@@ -45,7 +45,7 @@ class CueFile:
             log.info('result of automatic detection: {}'.format(encoding))
         try:
             c = encoding['encoding']
-            if c is None or encoding['confidence'] < 0.75:
+            if c is None or encoding['confidence'] < 0.6:
                 raise UnicodeDecodeError(
                     'unknown' if c is None else c.lower(),
                     self.byte_str, 0, len(self.byte_str),
