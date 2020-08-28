@@ -20,7 +20,7 @@ class CueFile:
     def __init__(self, filepath):
         self.filepath = os.path.abspath(filepath)
         self.directory, self.filename = os.path.split(self.filepath)
-        with open(filepath, 'rb') as f:
+        with open(self.filepath, 'rb') as f:
             self.byte_str = f.read()
         self.encoding = self.detect_file_encoding()
         self.newline = self.detect_newline()
@@ -199,8 +199,15 @@ class CueFix:
 
 
 def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=False, verbose=False):
-    CueFix(CueFile(filepath), backup, dryrun, verbose).fix(encoding, newline)
+    if verbose:
+        log.info('Start fix CUE file: {}'.format(filepath))
+    cue_file = CueFile(filepath)
+    if verbose:
+        log.info(str(cue_file))
+    CueFix(cue_file, backup, dryrun, verbose).fix(encoding, newline)
 
 
-def info(filepath):
+def info(filepath, verbose=False):
+    if verbose:
+        log.info('Start fix CUE file: {}'.format(filepath))
     return str(CueFile(filepath))

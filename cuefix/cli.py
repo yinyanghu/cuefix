@@ -46,7 +46,7 @@ def main():
     validate_args(args)
 
     if args.info:
-        print(cuefix.info(args.filepath))
+        print(cuefix.info(args.filepath, args.verbose))
         return
 
     cuefix.fix(args.filepath,
