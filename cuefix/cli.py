@@ -21,7 +21,7 @@ def main():
 
     dryrun_group = parser.add_argument_group('dry-run options')
     dryrun_group.add_argument('-y', '--yes', action='store_true', default=False,
-                              help='yes to all prompts')
+                              help='disable interactive mode and yes to all prompts')
     dryrun_group.add_argument('-i', '--info', action='store_true', default=False,
                               help='display metainfo of the input cue file only')
     dryrun_group.add_argument('--dryrun', action='store_true', default=False,
