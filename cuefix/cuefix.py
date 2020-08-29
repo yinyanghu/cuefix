@@ -62,9 +62,9 @@ class CueFile:
             if self.verbose:
                 log.info('found encoding: {}'.format(c))
             if self.interactive:
-                if c == 'ascii':
+                if c in ['ascii', 'utf-8-sig']:
                     if self.verbose:
-                        log.info('woohoo! skip prompt!')
+                        log.info('woohoo! it is {}, skip prompt!'.format(c))
                     return c
                 print(decoded)
                 print('encoding: {}', c)
