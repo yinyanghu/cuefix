@@ -20,6 +20,8 @@ def main():
                         help='enable verbose output')
 
     dryrun_group = parser.add_argument_group('dry-run options')
+    dryrun_group.add_argument('-y', '--yes', action='store_true', default=False,
+                              help='yes to all prompts')
     dryrun_group.add_argument('-i', '--info', action='store_true', default=False,
                               help='display metainfo of the input cue file only')
     dryrun_group.add_argument('--dryrun', action='store_true', default=False,
@@ -46,14 +48,14 @@ def main():
     validate_args(args)
 
     if args.info:
-        print(cuefix.info(args.filepath, args.verbose))
+        print(cuefix.info(args.filepath, not args.yes, args.verbose))
         return
 
     cuefix.fix(args.filepath,
                args.encoding if not args.no_encoding else None,
                args.newline if not args.no_newline else None,
                not args.no_backup,
-               args.dryrun, args.verbose)
+               args.dryrun, not args.yes, args.verbose)
 
 
 if __name__ == '__main__':

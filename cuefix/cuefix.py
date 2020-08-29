@@ -18,8 +18,14 @@ AUDIO_FILE_EXTENSION = ['wav', 'flac', 'ape', 'tta', 'tak']
 SUPPORT_ENCODING = ['gb2312', 'gbk', 'gb18030', 'utf-8', 'utf-8-sig']
 
 
+def feedback():
+    s = input('Looks good? (y/n)')
+    return s.lower() in ['y', 'yes', 't', 'true', 'ok', 'okay']
+
+
 class CueFile:
-    def __init__(self, filepath, verbose=False):
+    def __init__(self, filepath, interactive=True, verbose=False):
+        self.interactive = interactive
         self.verbose = verbose
         self.filepath = os.path.abspath(filepath)
         self.directory, self.filename = os.path.split(self.filepath)
@@ -49,19 +55,32 @@ class CueFile:
                 raise UnicodeDecodeError(
                     'unknown' if c is None else c.lower(),
                     self.byte_str, 0, len(self.byte_str),
-                    'Cannot detect encoding of file {}: {}'.format(self.filename, encoding))
+                    'cannot automatically detect encoding of file {}: {}'.format(self.filename, encoding))
             c = c.lower()
-            self.byte_str.decode(encoding=c, errors='strict')
+            decoded = self.byte_str.decode(encoding=c, errors='strict')
             if self.verbose:
-                log.info('found exact encoding: {}'.format(c))
-            return c
+                log.info('found encoding: {}'.format(c))
+            if self.interactive:
+                print(decoded)
+                print('encoding: {}', c)
+                if feedback():
+                    return c
+            raise UnicodeDecodeError(
+                'unknown', self.byte_str, 0, len(self.byte_str),
+                'cannot automatically detect encoding of file {}: {}'.format(self.filename, encoding))
         except UnicodeDecodeError:
             if self.verbose:
                 log.info(
-                    'failed to detect encoding automatically: {}'.format(encoding))
+                    'cannot automatically detect encoding: {}'.format(encoding))
             for c in SUPPORT_ENCODING:
                 try:
-                    self.byte_str.decode(encoding=c, errors='strict')
+                    decoded = self.byte_str.decode(encoding=c, errors='strict')
+                    if self.interactive:
+                        print(decoded)
+                        print('encoding: {}', c)
+                        if not feedback():
+                            raise UnicodeError(c, self.byte_str, 0, len(self.byte_str),
+                                               'tried on encoding {} but failed'.format(c))
                     if self.verbose:
                         log.info('found exact encoding: {}'.format(c))
                     return c
@@ -228,16 +247,16 @@ class CueFix:
         return byte_str.decode(encoding).replace(audio_file, new_audio_file).encode(encoding), True
 
 
-def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=False, verbose=False):
+def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=False, interactive=True, verbose=False):
     if verbose:
         log.info('Start fixing CUE file: {}'.format(filepath))
-    cue_file = CueFile(filepath, verbose)
+    cue_file = CueFile(filepath, interactive, verbose)
     if verbose:
         log.info(str(cue_file))
     CueFix(cue_file, backup, dryrun, verbose).fix(encoding, newline)
 
 
-def info(filepath, verbose=False):
+def info(filepath, interactive=True, verbose=False):
     if verbose:
         log.info('Start fixing CUE file: {}'.format(filepath))
-    return str(CueFile(filepath, verbose))
+    return str(CueFile(filepath, interactive, verbose))
