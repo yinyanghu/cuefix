@@ -7,10 +7,12 @@ CueFix is simple command-line tool to fix CUE files which are popular in lossles
 
 CueFix provides the following functionalities:
 
+- automatically detect encoding of CUE file: GB2312, GBK, GB18030, UTF-8, UTF-8 BOM, and SHIFT-JIS
 - convert encoding of CUE file: support GB2312, UTF-8, UTF-8 BOM, etc.
 - convert newline format of CUE file: support Windows CRLF and Unix LF
 - scan the directory and fix not matched audio file in CUE file
 - backup the original CUE file so that users can revert the CUE file back
+- interactive with users to verify fixed CUE files
 
 Please feel free to fork and contribute to the project if you like.
 
@@ -52,13 +54,11 @@ $ pip3 install --upgrade cuefix
 
 ```
 $ cuefix -h
-usage: cuefix [-h] [--version] [-v] [-i] [--dryrun]
-              [-e {utf-8-sig,utf-8,gb2312}] [-n {unix,windows}]
+usage: cuefix [-h] [--version] [-v] [-y] [-i] [--dryrun] [-e {utf-8-sig,utf-8,gb2312}] [-n {unix,windows}]
               [--no-encoding] [--no-newline] [--no-backup]
               filepath
 
-Fix a CUE file in a directory: convert encoding, convert newline character,
-fix not matched audio file.
+Fix a CUE file in a directory: convert encoding, convert newline character, fix not matched audio file.
 
 positional arguments:
   filepath              file path to the input cue file
@@ -69,16 +69,15 @@ optional arguments:
   -v, --verbose         enable verbose output
 
 dry-run options:
+  -y, --yes             disable interactive mode and yes to all prompts
   -i, --info            display metainfo of the input cue file only
   --dryrun              dry-run and print out fixed cue file
 
 fix options:
   -e {utf-8-sig,utf-8,gb2312}, --encoding {utf-8-sig,utf-8,gb2312}
-                        encoding which cue file will be converted to, default
-                        is UTF-8 BOM (utf-8-sig)
+                        encoding which cue file will be converted to, default is UTF-8 BOM (utf-8-sig)
   -n {unix,windows}, --newline {unix,windows}
-                        newline format which cue file will be converted to,
-                        default is Unix
+                        newline format which cue file will be converted to, default is Unix
   --no-encoding         converting encoding will be skipped
   --no-newline          converting newline will be skipped
 
