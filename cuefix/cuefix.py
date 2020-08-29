@@ -205,7 +205,7 @@ class CueFix:
             NEWLINE_CHAR[newline]
         ), True
 
-    def find_audio_file(self, directory, filename):
+    def find_audio_file(self, directory, audio_file, cue_file):
         audio_files = []
         for f in os.listdir(directory):
             for ext in AUDIO_FILE_EXTENSION:
@@ -223,10 +223,11 @@ class CueFix:
             return audio_files[0]
 
         # TODO(yinyanghu): Design a smart matching algorithm.
-        name = filename.rsplit('.', 1)[0]
-        for f in audio_files:
-            if f.startswith(name):
-                return f
+        for hint_f in [audio_file, cue_file]:
+            name = hint_f.rsplit('.', 1)[0]
+            for f in audio_files:
+                if f.startswith(name):
+                    return f
 
         raise Exception(
             'more than one audio file candidates to be used to fix the cue file: {}', audio_files)
@@ -245,7 +246,8 @@ class CueFix:
         if self.verbose:
             log.info('cannot find audio file {} in directory {}'.format(
                 audio_file, dir))
-        new_audio_file = self.find_audio_file(dir, audio_file)
+        new_audio_file = self.find_audio_file(
+            dir, audio_file, self.cue.filename)
         if self.verbose:
             log.info('found audio file {}'.format(new_audio_file))
 
