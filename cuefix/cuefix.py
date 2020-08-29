@@ -15,7 +15,8 @@ NEWLINE_CHAR = {
 }
 AUDIO_FILE_REGEX = re.compile(r'FILE "(.*)" WAVE')
 AUDIO_FILE_EXTENSION = ['wav', 'flac', 'ape', 'tta', 'tak']
-SUPPORT_ENCODING = ['gb2312', 'gbk', 'gb18030', 'utf-8', 'utf-8-sig']
+SUPPORT_ENCODING = ['gb2312', 'gbk', 'gb18030',
+                    'utf-8', 'utf-8-sig', 'shift-jis']
 
 
 def feedback():
