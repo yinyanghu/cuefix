@@ -1,3 +1,5 @@
+import logging
+
 import argparse
 import cuefix
 import sys
@@ -47,15 +49,18 @@ def main():
 
     validate_args(args)
 
+    logging.basicConfig(level=logging.INFO)
+    if args.verbose:
+        cuefix.log.setLevel(logging.INFO)
+
     if args.info:
-        print(cuefix.info(args.filepath, not args.yes, args.verbose))
+        print(cuefix.info(args.filepath, not args.yes))
         return
 
     cuefix.fix(args.filepath,
                args.encoding if not args.no_encoding else None,
                args.newline if not args.no_newline else None,
-               not args.no_backup,
-               args.dryrun, not args.yes, args.verbose)
+               not args.no_backup, args.dryrun, not args.yes)
 
 
 if __name__ == '__main__':
