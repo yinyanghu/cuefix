@@ -46,7 +46,7 @@ class CueFile:
     Newline: {}
     Audio File: {}'''.format(self.filename, self.directory, len(self.byte_str),
                              self.encoding, self.newline, self.audio_file)
-    
+
     def auto_detect_file_encoding(self):
         encoding = chardet.detect(self.byte_str)
         if self.verbose:
@@ -111,7 +111,6 @@ class CueFile:
                 log.info('cannot automatically detect encoding: %s', encoding)
 
         return self.trial_and_error_detect_file_encoding()
-            
 
     def detect_newline(self):
         for sys in NEWLINE_CHAR:
@@ -165,32 +164,34 @@ class CueFix:
             print(cue_byte_str.decode(encoding))
             return
 
-        if file_changed:
-            cue_filename = self.cue.filename
-            directory = self.cue.directory
+        if not file_changed:
+            if self.verbose:
+                log.info('everything looks good!')
+            return
 
-            if self.backup:
-                backup_cue_filename = cue_filename + '.backup'
+        cue_filename = self.cue.filename
+        directory = self.cue.directory
 
-                if not os.path.exists(backup_cue_filename):
-                    if self.verbose:
-                        log.info('backup cue file %s to %s',
-                                 cue_filename, backup_cue_filename)
-                else:
-                    if self.verbose:
-                        log.info('found previous backup cue file')
-                    timestamp = str(int(time.time() * 10000))
-                    backup_cue_filename = cue_filename + '.' + timestamp + '.backup'
+        if self.backup:
+            backup_cue_filename = cue_filename + '.backup'
 
-                os.rename(os.path.join(directory, cue_filename),
-                          os.path.join(directory, backup_cue_filename))
-
-            with open(os.path.join(directory, cue_filename), 'wb') as cue_file:
+            if not os.path.exists(backup_cue_filename):
                 if self.verbose:
-                    log.info('write the fixed cue into file %s', cue_filename)
-                cue_file.write(cue_byte_str)
-        elif self.verbose:
-            log.info('everything looks good!')
+                    log.info('backup cue file %s to %s',
+                                cue_filename, backup_cue_filename)
+            else:
+                if self.verbose:
+                    log.info('found previous backup cue file')
+                timestamp = str(int(time.time() * 10000))
+                backup_cue_filename = cue_filename + '.' + timestamp + '.backup'
+
+            os.rename(os.path.join(directory, cue_filename),
+                        os.path.join(directory, backup_cue_filename))
+
+        with open(os.path.join(directory, cue_filename), 'wb') as cue_file:
+            if self.verbose:
+                log.info('write the fixed cue into file %s', cue_filename)
+            cue_file.write(cue_byte_str)
 
     def convert_encoding(self, byte_str, encoding='utf-8-sig'):
         if self.cue.encoding == encoding:
@@ -242,7 +243,7 @@ class CueFix:
                     return filename
 
         raise Exception(
-            'more than one audio file candidates to be used to fix the cue file: {}'.format(audio_files))
+            'more than one audio file candidates: {}'.format(audio_files))
 
     def fix_audio_file(self, byte_str, encoding):
         audio_file = self.cue.audio_file
@@ -266,7 +267,13 @@ class CueFix:
         return byte_str.decode(encoding).replace(audio_file, new_audio_file).encode(encoding), True
 
 
-def fix(filepath, encoding='utf-8-sig', newline='unix', backup=True, dryrun=False, interactive=True, verbose=False):
+def fix(filepath,
+        encoding='utf-8-sig',
+        newline='unix',
+        backup=True,
+        dryrun=False,
+        interactive=True,
+        verbose=False):
     if verbose:
         log.info('Start fixing CUE file: %s', filepath)
     cue_file = CueFile(filepath, interactive, verbose)
