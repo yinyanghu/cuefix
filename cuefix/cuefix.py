@@ -36,7 +36,7 @@ class CueFile:
         self.newline = self.detect_newline()
         self.audio_file = self.extract_audio_file()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '''Cue File Info:
     Name: {}
     Directory: {}
@@ -189,7 +189,7 @@ class CueFix:
     def convert_newline(self, byte_str, newline='unix'):
         if self.cue.newline == newline:
             log.info('no need to convert newline, it is %s format already',
-                         newline)
+                     newline)
             return byte_str, False
         log.info('convert newline from %s to %s format',
                  self.cue.newline, newline)
@@ -231,11 +231,11 @@ class CueFix:
         audio_filepath = os.path.join(directory, audio_file)
         if os.path.exists(audio_filepath):
             log.info('no need to fix, audio file %s exists in directory %s',
-                         audio_file, directory)
+                     audio_file, directory)
             return byte_str, False
 
         log.info('cannot find audio file %s in directory %s',
-                     audio_file, directory)
+                 audio_file, directory)
         new_audio_file = self.find_audio_file(
             directory, audio_file, self.cue.filename)
         log.info('found audio file %s', new_audio_file)
