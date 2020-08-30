@@ -46,57 +46,72 @@ class CueFile:
     Newline: {}
     Audio File: {}'''.format(self.filename, self.directory, len(self.byte_str),
                              self.encoding, self.newline, self.audio_file)
-
-    def detect_file_encoding(self):
+    
+    def auto_detect_file_encoding(self):
         encoding = chardet.detect(self.byte_str)
         if self.verbose:
             log.info('result of automatic detection: %s', encoding)
-        try:
-            enc = encoding['encoding']
-            enc = enc.lower() if enc is not None else None
-            if enc is None or encoding['confidence'] < 0.6:
-                raise UnicodeDecodeError(
-                    'unknown' if enc is None else enc,
-                    self.byte_str, 0, len(self.byte_str),
-                    'cannot automatically detect encoding of file {}: {}'.format(self.filename, encoding))
-            decoded = self.byte_str.decode(encoding=enc, errors='strict')
+        enc = encoding['encoding']
+        enc = enc.lower() if enc is not None else None
+        if enc is None or encoding['confidence'] < 0.6:
+            raise UnicodeError(
+                'unknown' if enc is None else enc,
+                self.byte_str, 0, len(self.byte_str),
+                'cannot automatically detect encoding of file {}: {}'.format(
+                    self.filename, encoding))
+        decoded = self.byte_str.decode(encoding=enc, errors='strict')
+        if self.verbose:
+            log.info('found encoding: %s', enc)
+        if not self.interactive:
+            return enc, encoding
+        if enc in ['ascii', 'utf-8-sig']:
             if self.verbose:
-                log.info('found encoding: %s', enc)
-            if self.interactive:
-                if enc in ['ascii', 'utf-8-sig']:
+                log.info('woohoo! 100%% sure it is %s, skip prompt!', enc)
+            return enc, encoding
+        print(decoded)
+        print('encoding: {}', enc)
+        if feedback():
+            return enc, encoding
+        raise UnicodeError(
+            'unknown', self.byte_str, 0, len(self.byte_str),
+            'cannot automatically detect encoding of file {}: {}'.format(
+                self.filename, encoding))
+
+    def trial_and_error_detect_file_encoding(self):
+        for enc in SUPPORT_ENCODING:
+            try:
+                decoded = self.byte_str.decode(encoding=enc, errors='strict')
+                if not self.interactive:
                     if self.verbose:
-                        log.info('woohoo! it is %s, skip prompt!', enc)
+                        log.info('found exact encoding: %s', enc)
                     return enc
                 print(decoded)
                 print('encoding: {}', enc)
                 if feedback():
-                    return enc
-            raise UnicodeDecodeError(
-                'unknown', self.byte_str, 0, len(self.byte_str),
-                'cannot automatically detect encoding of file {}: {}'.format(self.filename, encoding))
-        except UnicodeDecodeError:
-            if self.verbose:
-                log.info('cannot automatically detect encoding: %s', encoding)
-            for enc in SUPPORT_ENCODING:
-                try:
-                    decoded = self.byte_str.decode(
-                        encoding=enc, errors='strict')
-                    if self.interactive:
-                        print(decoded)
-                        print('encoding: {}', enc)
-                        if not feedback():
-                            raise UnicodeError(enc, self.byte_str, 0, len(self.byte_str),
-                                               'tried on encoding {} but failed'.format(enc))
                     if self.verbose:
                         log.info('found exact encoding: %s', enc)
                     return enc
-                except UnicodeError:
-                    if self.verbose:
-                        log.info('tried on encoding %s but failed', enc)
-        raise UnicodeDecodeError(
+                raise UnicodeError(enc, self.byte_str, 0, len(self.byte_str),
+                                   'failed on encoding {}'.format(enc))
+            except UnicodeError:
+                if self.verbose:
+                    log.info('failed on encoding %s', enc)
+
+        raise UnicodeError(
             'unknown',
             self.byte_str, 0, len(self.byte_str),
             'cannot use any support encodings to decode the cue file')
+
+    def detect_file_encoding(self):
+        try:
+            enc, encoding = self.auto_detect_file_encoding()
+            return enc
+        except UnicodeError:
+            if self.verbose:
+                log.info('cannot automatically detect encoding: %s', encoding)
+
+        return self.trial_and_error_detect_file_encoding()
+            
 
     def detect_newline(self):
         for sys in NEWLINE_CHAR:
@@ -170,10 +185,10 @@ class CueFix:
                 os.rename(os.path.join(directory, cue_filename),
                           os.path.join(directory, backup_cue_filename))
 
-            with open(os.path.join(directory, cue_filename), 'wb') as f:
+            with open(os.path.join(directory, cue_filename), 'wb') as cue_file:
                 if self.verbose:
                     log.info('write the fixed cue into file %s', cue_filename)
-                f.write(cue_byte_str)
+                cue_file.write(cue_byte_str)
         elif self.verbose:
             log.info('everything looks good!')
 
@@ -227,7 +242,7 @@ class CueFix:
                     return filename
 
         raise Exception(
-            'more than one audio file candidates to be used to fix the cue file: {}', audio_files)
+            'more than one audio file candidates to be used to fix the cue file: {}'.format(audio_files))
 
     def fix_audio_file(self, byte_str, encoding):
         audio_file = self.cue.audio_file
