@@ -149,13 +149,15 @@ class CueFix:
             cue_byte_str, current_encoding)
         file_changed = file_changed or changed
 
+        decoded = cue_byte_str.decode(current_encoding)
+
         if self.dryrun:
             log.info('just a dry-run')
-            return cue_byte_str.decode(current_encoding)
+            return decoded
 
         if not file_changed:
             log.info('everything looks good!')
-            return cue_byte_str.decode(current_encoding)
+            return decoded
 
         cue_filename = self.cue.filename
         directory = self.cue.directory
@@ -178,7 +180,7 @@ class CueFix:
             log.info('write the fixed cue into file %s', cue_filename)
             cue_file.write(cue_byte_str)
 
-        return cue_byte_str.decode(current_encoding)
+        return decoded
 
     def convert_encoding(self, byte_str, encoding='utf-8-sig'):
         if self.cue.encoding == encoding:
