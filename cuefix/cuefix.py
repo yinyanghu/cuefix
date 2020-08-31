@@ -36,7 +36,7 @@ class CueFile:
         self.newline = self.detect_newline()
         self.audio_file = self.extract_audio_file()
 
-    def __str__(self) -> str:
+    def __str__(self):
         return '''Cue File Info:
     Name: {}
     Directory: {}
@@ -151,12 +151,11 @@ class CueFix:
 
         if self.dryrun:
             log.info('just a dry-run')
-            print(cue_byte_str.decode(encoding))
-            return
+            return cue_byte_str.decode(current_encoding)
 
         if not file_changed:
             log.info('everything looks good!')
-            return
+            return cue_byte_str.decode(current_encoding)
 
         cue_filename = self.cue.filename
         directory = self.cue.directory
@@ -178,6 +177,8 @@ class CueFix:
         with open(os.path.join(directory, cue_filename), 'wb') as cue_file:
             log.info('write the fixed cue into file %s', cue_filename)
             cue_file.write(cue_byte_str)
+
+        return cue_byte_str.decode(current_encoding)
 
     def convert_encoding(self, byte_str, encoding='utf-8-sig'):
         if self.cue.encoding == encoding:
@@ -252,9 +253,11 @@ def fix(filepath,
     log.info('start fixing CUE file: %s', filepath)
     cue_file = CueFile(filepath, interactive)
     log.info(str(cue_file))
-    CueFix(cue_file, backup, dryrun).fix(encoding, newline)
+    fixed_cue = CueFix(cue_file, backup, dryrun).fix(encoding, newline)
+    if dryrun:
+        print(fixed_cue)
 
 
 def info(filepath, interactive=True):
     log.info('start fixing CUE file: %s', filepath)
-    return str(CueFile(filepath, interactive))
+    print(CueFile(filepath, interactive))

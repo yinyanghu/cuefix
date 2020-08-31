@@ -54,7 +54,7 @@ def main():
         cuefix.log.setLevel(logging.INFO)
 
     if args.info:
-        print(cuefix.info(args.filepath, not args.yes))
+        cuefix.info(args.filepath, not args.yes)
         return
 
     cuefix.fix(args.filepath,
