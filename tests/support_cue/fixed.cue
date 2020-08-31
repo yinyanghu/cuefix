@@ -1,9 +1,9 @@
-REM DISCID 12345678
+ï»¿REM DISCID 12345678
 REM COMMENT "ExactAudioCopy v1.3"
 PERFORMER "Artist Apple"
 TITLE "Album ABC"
 REM COMPOSER ""
-FILE "CDImage.wav" WAVE
+FILE "CDImage.flac" WAVE
   TRACK 01 AUDIO
     TITLE "Track A"
     PERFORMER "Artist Apple"
@@ -11,15 +11,15 @@ FILE "CDImage.wav" WAVE
     FLAGS DCP
     INDEX 01 00:00:00
   TRACK 02 AUDIO
-    TITLE "Òô¹ì B"
-    PERFORMER "ÒÕÊõ¼Ò Apple"
+    TITLE "éŸ³è½¨ B"
+    PERFORMER "è‰ºæœ¯å®¶ Apple"
     REM COMPOSER ""
     FLAGS DCP
     INDEX 00 05:00:00
     INDEX 01 05:30:00
   TRACK 03 AUDIO
-    TITLE "Òô¹ì C"
-    PERFORMER "ÒÕÊõ¼Ò Æ»¹û"
+    TITLE "éŸ³è½¨ C"
+    PERFORMER "è‰ºæœ¯å®¶ è‹¹æžœ"
     REM COMPOSER ""
     FLAGS DCP
     INDEX 00 08:00:00
