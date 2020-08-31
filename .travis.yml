@@ -9,4 +9,4 @@ install:
   - pip install . # command to install cuefix
 # command to run tests
 script:
-  - pytest
+  - pytest --verbose
