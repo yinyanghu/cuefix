@@ -89,6 +89,12 @@ backup options:
   --no-backup           no backup for the input cue file, USE WITH CAUTION!
 ```
 
+You can recursively run `cuefix` to fix all CUE file in a directory:
+
+```bash
+$ find <directory> -type f -name "*.cue" -exec cuefix -v {} \;
+```
+
 ## CUE Formats Supported by Popular Media Players
 
 ### Media Players
