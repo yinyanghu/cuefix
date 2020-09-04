@@ -60,14 +60,14 @@ class CueFile:
         decoded = self.byte_str.decode(encoding=enc, errors='strict')
         log.info('found encoding: %s', enc)
         if not self.interactive:
-            return enc, encoding
+            return enc
         if enc in ['ascii', 'utf-8-sig']:
             log.info('woohoo! 100%% sure it is %s, skip prompt!', enc)
-            return enc, encoding
+            return enc
         print(decoded)
         print('encoding: {}', enc)
         if feedback():
-            return enc, encoding
+            return enc
         raise UnicodeError(
             'unknown', self.byte_str, 0, len(self.byte_str),
             'cannot automatically detect encoding of file {}: {}'.format(
@@ -97,10 +97,9 @@ class CueFile:
 
     def detect_file_encoding(self):
         try:
-            enc, encoding = self.auto_detect_file_encoding()
-            return enc
+            return self.auto_detect_file_encoding()
         except UnicodeError:
-            log.info('cannot automatically detect encoding: %s', encoding)
+            log.info('cannot automatically detect encoding')
 
         return self.trial_and_error_detect_file_encoding()
 
