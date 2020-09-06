@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/cuefix.svg?style=plastic)](https://badge.fury.io/py/cuefix)
 [![PyPI](https://badge.fury.io/py/cuefix.svg)](https://badge.fury.io/py/cuefix)
 [![Travis-CI](https://travis-ci.com/yinyanghu/cuefix.svg)](https://travis-ci.com/github/yinyanghu/cuefix)
+[![Maintained](https://img.shields.io/maintenance/yes/2020.svg)](https://github.com/yinyanghu/cuefix)
 [![Downloads](https://pepy.tech/badge/cuefix)](https://pepy.tech/project/cuefix)
 [![Join the chat at https://gitter.im/cuefix/community](https://badges.gitter.im/cuefix/community.svg)](https://gitter.im/cuefix/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ![License](https://img.shields.io/github/license/yinyanghu/cuefix)
