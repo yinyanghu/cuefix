@@ -14,8 +14,8 @@ NEWLINE_CHAR = {
     # must check windows format before unix format, since '\n' is a substring of '\r\n'
     'unix': b'\n',
 }
-AUDIO_FILE_REGEX = re.compile(r'FILE "(.*)" WAVE')
-AUDIO_FILE_EXTENSION = ['wav', 'flac', 'ape', 'tta', 'tak']
+AUDIO_FILE_REGEX = re.compile(r'FILE "(.*)" (WAVE|MP3)')
+AUDIO_FILE_EXTENSION = ['wav', 'flac', 'ape', 'tta', 'tak', 'mp3']
 SUPPORT_ENCODING = ['gb2312', 'gbk', 'gb18030',
                     'utf-8', 'utf-8-sig', 'shift-jis']
 
